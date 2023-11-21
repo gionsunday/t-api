@@ -1,0 +1,50 @@
+import * as Joi from '@hapi/joi';
+import AuthValidation from './validation';
+import { IAuthService } from './interface';
+import { ITokenRequest } from './model';
+import UsersModel, { IUsersModel } from '../Users/model';
+
+
+/**
+ * @export
+ * @implements {IAuthService}
+ */
+const AuthService: IAuthService = {
+
+    /**
+     * @param {ITokenRequest} body
+     * @returns {Promise <any>}
+     * @memberof AuthService
+     */
+    async generateToken(body: ITokenRequest): Promise<any> {
+        try {
+            const validate: Joi.ValidationResult<ITokenRequest> = AuthValidation.validteTokenInput(body);
+
+            if (validate.error) {
+                throw new Error(validate.error.message);
+            }
+
+            //Fetch from collection based on email password
+            const user: IUsersModel = await UsersModel.findOne(
+
+                {
+                    email: body.email,
+                    password: body.password //do encryption check like md5(body.password)
+                });
+
+
+            if (user != null) {
+                return user;
+            }
+
+            throw new Error('Invalid password or email');
+        } catch (error) {
+            throw new Error(error);
+        }
+    },
+};
+
+export default AuthService;
+
+
+
