@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express = require("express");
 const Middleware = require("@/config/middleware/middleware");
 const Routes = require("@/routes");
+//import { dirname } from 'path';
 /**
  * @constant {express.Application}
  */

@@ -6,8 +6,10 @@ const bodyParser = require("body-parser");
 const compression = require("compression");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
+const express = require("express");
 const helmet = require("helmet");
 const error_1 = require("@/config/error");
+const path = require("path");
 const sendHttpError_1 = require("@/config/error/sendHttpError");
 const Logger_1 = require("@/utils/Logger");
 /**
@@ -19,6 +21,7 @@ function configure(app) {
     app.use(bodyParser.urlencoded({
         extended: false,
     }));
+    app.use('/api', express.static(path.join(__dirname, 'public')));
     app.use(bodyParser.json());
     // parse Cookie header and populate req.cookies with an object keyed by the cookie names.
     app.use(cookieParser());

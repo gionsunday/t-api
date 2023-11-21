@@ -48,13 +48,11 @@ export function init(app: express.Application): void {
     app.use('/v1/exchangeRates', jwtConfig.isAuthenticated, ExchangeratesRouter);
     app.use('/v1/transactions', jwtConfig.isAuthenticated, TransactionsRouter);
     app.use('/v1/recipients', jwtConfig.isAuthenticated, RecipientsRouter);
-    app.use('/v1/users', jwtConfig.isAuthenticated, UsersRouter);
+    app.use('/v1/users', UsersRouter);
     app.use('/v1/notification', jwtConfig.isAuthenticated, NotificationRouter);
     app.use('/v1/announcements', jwtConfig.isAuthenticated, AnnouncementsRouter);
     app.use('/v1/currencies', jwtConfig.isAuthenticated, CurrenciesRouter);
     app.use('/v1/beneficiary', jwtConfig.isAuthenticated, BeneficiaryRouter);
-
-
     app.use('/v1/file', jwtConfig.isAuthenticated, FileRouter);
     /**
      * @description Forwards any requests to the /auth URI to our AuthRouter

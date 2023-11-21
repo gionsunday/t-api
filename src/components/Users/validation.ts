@@ -23,8 +23,8 @@ class UsersValidation extends Validation {
      */
     createUsers(params: IUsersModel): Joi.ValidationResult<IUsersModel> {
         const schema: Joi.ObjectSchema = Joi.object().keys({
-            email: Joi.string(),
-            password: Joi.string(),
+            email: Joi.string().required().email(),
+            password: Joi.string().required(),
             profile: Joi.object(),
             username: Joi.string(),
             wallet: Joi.object(),
@@ -42,7 +42,7 @@ class UsersValidation extends Validation {
     */
     updateUsers(params: IUsersModel): Joi.ValidationResult<IUsersModel> {
         const schema: Joi.ObjectSchema = Joi.object().keys({
-            email: Joi.string(),
+            email: Joi.string().required().email(),
             password: Joi.string(),
             profile: Joi.object(),
             username: Joi.string(),

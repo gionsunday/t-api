@@ -22,8 +22,8 @@ class UsersValidation extends validation_1.default {
      */
     createUsers(params) {
         const schema = Joi.object().keys({
-            email: Joi.string(),
-            password: Joi.string(),
+            email: Joi.string().required().email(),
+            password: Joi.string().required(),
             profile: Joi.object(),
             username: Joi.string(),
             wallet: Joi.object(),
@@ -38,7 +38,7 @@ class UsersValidation extends validation_1.default {
     */
     updateUsers(params) {
         const schema = Joi.object().keys({
-            email: Joi.string(),
+            email: Joi.string().required().email(),
             password: Joi.string(),
             profile: Joi.object(),
             username: Joi.string(),

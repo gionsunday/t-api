@@ -6,6 +6,7 @@ import * as cors from 'cors';
 import * as express from 'express';
 import * as helmet from 'helmet';
 import { HttpError } from '@/config/error';
+import * as path from 'path'
 import { sendHttpErrorModule } from '@/config/error/sendHttpError';
 import Logger from '@/utils/Logger';
 
@@ -20,6 +21,9 @@ export function configure(app: express.Application): void {
             extended: false,
         })
     );
+    
+    app.use('/api', express.static(path.join(__dirname, 'public')))
+
     app.use(bodyParser.json());
     // parse Cookie header and populate req.cookies with an object keyed by the cookie names.
     app.use(cookieParser());

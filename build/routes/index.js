@@ -43,7 +43,7 @@ function init(app) {
     app.use('/v1/exchangeRates', jwtConfig.isAuthenticated, ExchangeratesRouter_1.default);
     app.use('/v1/transactions', jwtConfig.isAuthenticated, TransactionsRouter_1.default);
     app.use('/v1/recipients', jwtConfig.isAuthenticated, RecipientsRouter_1.default);
-    app.use('/v1/users', jwtConfig.isAuthenticated, UsersRouter_1.default);
+    app.use('/v1/users', UsersRouter_1.default);
     app.use('/v1/notification', jwtConfig.isAuthenticated, NotificationRouter_1.default);
     app.use('/v1/announcements', jwtConfig.isAuthenticated, AnnouncementsRouter_1.default);
     app.use('/v1/currencies', jwtConfig.isAuthenticated, CurrenciesRouter_1.default);

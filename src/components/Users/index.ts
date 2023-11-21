@@ -85,7 +85,7 @@ export async function create(req: RequestWithUser, res: Response, next: NextFunc
 export async function update(req: RequestWithUser, res: Response, next: NextFunction): Promise<void> {
     try {
         const users = await UsersService.update(req.params.id, req.body);
-        if (users > 0) {
+        if (Number(users) > 0) {
             res.status(200).json('Updated successfully');
         } else {
             res.status(400).json('Failed to update');

@@ -105,7 +105,7 @@ function update(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const users = yield service_1.default.update(req.params.id, req.body);
-            if (users > 0) {
+            if (Number(users) > 0) {
                 res.status(200).json('Updated successfully');
             }
             else {

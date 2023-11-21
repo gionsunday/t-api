@@ -2,6 +2,7 @@ import * as connections from '@/config/connection/connection';
 import { Document, Schema } from 'mongoose';
 import { NextFunction } from 'express';
 import * as bcrypt from "bcrypt"
+//import { any } from '@hapi/joi';
 
 
 export type Profile = {
@@ -73,6 +74,7 @@ export interface IUsersModel extends Document {
  */
 const UsersSchema: Schema = new Schema(
     {
+        
         email: String,
         password: String,
         profile: Object,
@@ -96,8 +98,29 @@ const UsersSchema: Schema = new Schema(
       user.password = await bcrypt.hash(user.password, 8);
     }
     next();
-
 });
+
+/**
+ * Check if email is taken
+ * @param {string} email - The user's email
+ * @param {ObjectId} [excludeUserId] - The id of the user to be excluded
+ * @returns {Promise<boolean>}
+ */
+UsersSchema.statics.isEmailTaken = async function (email, excludeUserId) {
+    const user: any = await this.findOne({ email, _id: { $ne: excludeUserId } });
+    return !!user;
+  };
+
+/**
+ * Check if password matches the user's password
+ * @param {string} password
+ * @returns {Promise<boolean>}
+ */
+    UsersSchema.methods.isPasswordMatch = async function (password) {
+    const user: any = this;
+    return await bcrypt.compare(password, user.password);
+  };
+
 
 
 

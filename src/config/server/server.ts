@@ -1,6 +1,8 @@
 import * as express from 'express';
 import * as Middleware from '@/config/middleware/middleware';
 import * as Routes from '@/routes';
+//import { dirname } from 'path';
+
 
 /**
  * @constant {express.Application}
