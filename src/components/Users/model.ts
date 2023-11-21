@@ -1,6 +1,7 @@
 import * as connections from '@/config/connection/connection';
 import { Document, Schema } from 'mongoose';
 import { NextFunction } from 'express';
+import * as bcrypt from "bcrypt"
 
 
 export type Profile = {
@@ -83,9 +84,19 @@ const UsersSchema: Schema = new Schema(
         versionKey: false,
     }
 ).pre('save', async function (next: NextFunction): Promise<void> {
-    //const users: any = this; // tslint:disable-line
-
+     //const users: any = this; // tslint:disable-line
     //do any customization of request on users here like encrypting password before saving
+    
+    /*
+    Hash user password befor saving.
+    returns hashed password
+     */
+    const user: any  = this;
+    if (user.isModified('password')) {
+      user.password = await bcrypt.hash(user.password, 8);
+    }
+    next();
+
 });
 
 
