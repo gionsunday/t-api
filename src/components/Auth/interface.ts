@@ -12,6 +12,7 @@ export interface IAuthService {
      * @memberof AuthService
      */
     generateToken(tokenRequest: ITokenRequest): Promise<any>;
+    generateRegistrationToken(tokenRequest: ITokenRequest): Promise<any>;
 }
 
 

@@ -3,6 +3,8 @@ import AuthValidation from './validation';
 import { IAuthService } from './interface';
 import { ITokenRequest } from './model';
 import UsersModel, { IUsersModel } from '../Users/model';
+import isPasswordMatch from './model';
+
 
 
 /**
@@ -25,17 +27,38 @@ const AuthService: IAuthService = {
             }
 
             //Fetch from collection based on email password
-            const user: IUsersModel = await UsersModel.findOne(
-
+            const { password }: IUsersModel = await UsersModel.findOne(
                 {
-                    email: body.email,
-                    password: body.password //do encryption check like md5(body.password)
-                });
+                    email: body.email  
+                })
+                const __pass: any = await isPasswordMatch(body.password, password)
+
+                if (__pass) {
+                    const user:  IUsersModel = await UsersModel.findOne({
+                        email:body.email,
+                        password:body.password
+                    })
+                    return user;
+                }
+
+            throw new Error('Invalid password or email');
+        } catch (error) {
+            throw new Error(error);
+        }
+    },
 
 
-            if (user != null) {
-                return user;
+    async generateRegistrationToken(body: ITokenRequest): Promise<any> {
+        try {
+            const validate: Joi.ValidationResult<ITokenRequest> = AuthValidation.validteTokenInput(body);
+
+            if (validate.error) {
+                throw new Error(validate.error.message);
             }
+            return 
+
+            //Fetch from collection based on email password
+              
 
             throw new Error('Invalid password or email');
         } catch (error) {

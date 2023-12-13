@@ -1,3 +1,4 @@
+import * as bcrypt from "bcrypt"
 /**
  * @export
  * @interface ITokenRequest
@@ -15,3 +16,16 @@ export interface ITokenResponse {
     expiresIn: Number;
     userData: any;
 }
+
+
+/**
+ * Check if password matches the user's password
+ * @param {string} password
+ * @returns {Promise<boolean>}
+ */
+
+const isPasswordMatch = async function (password:String, userPassword:any) : Promise<boolean> {
+    return await bcrypt.compare(password, userPassword);
+  };
+
+  export default isPasswordMatch

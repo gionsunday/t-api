@@ -38,13 +38,22 @@ export interface IUsersService {
      */
     findOne(code: string): Promise<IUsersModel>;
 
+
+    /**
+     * @param {IUsersModel} IUsersModel
+     * @returns {Promise<IUsersModel>}
+     * @memberof IUsersService
+     */
+    emailVerification(IUsersModel: IUsersModel): Promise<IUsersModel>;
+    
+
     /**
      * @param {IUsersModel} IUsersModel
      * @returns {Promise<IUsersModel>}
      * @memberof IUsersService
      */
     insert(IUsersModel: IUsersModel): Promise<IUsersModel>;
-
+    
     /**
      * @param {string} id
      * @param {IUsersModel} IUsersModel

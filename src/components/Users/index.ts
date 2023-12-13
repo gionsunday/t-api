@@ -3,6 +3,8 @@ import { HttpError } from '@/config/error';
 import { IUsersModel } from './model';
 import { NextFunction, Response } from 'express';
 import { RequestWithUser } from '@/config/server';
+import * as jwt from 'jsonwebtoken'
+import * as nodemailer from 'nodemailer'
 
 /**
  * @export
@@ -70,6 +72,58 @@ export async function create(req: RequestWithUser, res: Response, next: NextFunc
         const users: IUsersModel = await UsersService.insert(req.body);
 
         res.status(201).json(users);
+    } catch (error) {
+        next(new HttpError(error.message.status, error.message));
+    }
+}
+/**
+ * @export
+ * @param {RequestWithUser} req
+ * @param {Response} res
+ * @param {NextFunction} next
+ * @returns {Promise <void>}
+ */
+export async function emailVerification(req: RequestWithUser, res: Response, next: NextFunction): Promise<void> {
+    const { email } = req.body;
+    try {
+        const token: any =  jwt.sign(req.body, process.env.SECRET,  {expiresIn: "5m"});
+
+        var transporter: any = nodemailer.createTransport({
+            service :'gmail',
+            auth:{
+                user: process.env.MAILER_AUTH_EMAIL,
+                pass: process.env.MAILER_AUTH_PASS
+            }
+        });
+        const mailOptions = {
+            from: process.env.MAILER_AUTH_EMAIL,
+            to: email,
+            subject: ' Email Account Verification',
+            html: `
+            <body style="background-color:white; padding:5px; height:100%; width:100%>
+            <div style="text-align:left; min-height:100vh; padding:20px">
+         
+         
+             <h4>Email Verification Code</>
+             <h2>Your account is almost ready</h2>
+            <p>Kindly verify your email to complete your account registration</p> <br/>
+      
+              <a href="https://8484-gionsunday-tapi-mcxlppcckcf.ws-eu106.gitpod.io/userverification/token" st >Verify</a>
+            <p>If this is not your doing,  you can safely ignore this message. Someone might have typed your email address by mistaken <br/> Thanks.</p>
+            </div>
+            </body>
+            
+            `
+        };
+
+        transporter.sendMail(mailOptions, function(error: any, body: any): any {
+            if(error){
+                return error;
+            }
+            res.json({message: 'Email has be sent to you, kindly verify your email to complete registration', token:token})
+        })
+         
+
     } catch (error) {
         next(new HttpError(error.message.status, error.message));
     }

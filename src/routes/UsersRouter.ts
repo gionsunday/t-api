@@ -66,6 +66,8 @@ router.get('/', UsersComponent.findAll);
  *              schema:
  *                $ref: '#/components/schemas/Error'
  */
+
+
 router.post('/search', UsersComponent.search);
 
 /**
@@ -102,6 +104,41 @@ router.post('/search', UsersComponent.search);
  *                $ref: '#/components/schemas/Error'
  */
 router.post('/', UsersComponent.create);
+
+/**
+ * POST method route
+ * @example http://localhost:PORT/v1/users
+ *
+ * @swagger
+ * /v1/users:
+ *   post:
+ *      description: Create new users
+ *      tags: ["users"]
+ *      security:
+ *       - bearerAuth: []
+ *      requestBody:
+ *        description: users creation request body
+ *        required: true
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/UsersSchema'
+ *      responses:
+ *        201:
+ *          description: return created users
+ *          content:
+ *            application/json:
+ *              schema:
+ *                oneOf:
+ *                  - $ref: '#/components/schemas/UsersSchema'
+ *        default:
+ *          description: unexpected error
+ *          content:
+ *            application/json:
+ *              schema:
+ *                $ref: '#/components/schemas/Error'
+ */
+router.post('/verification', UsersComponent.emailVerification);
 
 
 /**

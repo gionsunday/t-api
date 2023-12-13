@@ -4,6 +4,7 @@ import UsersValidation from './validation';
 import { IUsersService } from './interface';
 import { Types } from 'mongoose';
 import { GetSearchQuery, ISearchParamRequest } from '@/utils/SearchHelper';
+import { emailVerification } from '.';
 
 /**
  * @export
@@ -94,12 +95,81 @@ const UsersService: IUsersService = {
         }
     },
 
+
+/**
+     * @param {IUsersModel} users
+     * @returns {Promise < IUsersModel >}
+     * @memberof UsersService
+     */
+async emailVerification(body: IUsersModel): Promise<IUsersModel> {
+    
+    try {
+        const validate: Joi.ValidationResult<IUsersModel> = UsersValidation.createUsers(body);
+
+        if (validate.error) {
+            throw new Error(validate.error.message);
+        }
+
+        // const RegistrationToken: any = await jwt.sign(body, process.env.SECRET, {expiresIn: "5min"});
+        // if (!RegistrationToken){
+        //     throw new Error("Registration Failed. Please Try Again")
+        // }  
+        // var transporter = nodemailer.createTransport({
+        //     service :'gmail',
+        //     auth:{
+        //         user: process.env.MAILER_AUTH_EMAIL,
+        //         pass: process.env.MAILER_AUTH_PASS
+        //     }
+        // })
+
+        // const mailOptions:any = {
+        //     from: process.env.MAILER_AUTH_EMAIL,
+        //     to: email,
+        //     subject: ' Email Verification Code',
+        //     html: `
+        //     <body style="background-color:white; padding:5px; height:100%; width:100%>
+        //     <div style="text-align:left; min-height:100vh; padding:20px">
+         
+         
+        //      <h4>Email Verification Code</>
+        //      <h2>Your account is almost ready</h2>
+        //     <p>Kindly verify your email to complete your account registration</p> <br/>
+      
+        //       <a href="https://8484-gionsunday-tapi-mcxlppcckcf.ws-eu106.gitpod.io/userverification/token" st >Verify</a>
+        //     <p>If this is not your doing,  you can safely ignore this message. Someone might have typed your email address by mistaken <br/> Thanks.</p>
+        //     </div>
+        //     </body>
+            
+
+        //     `
+        
+        
+        // };
+
+        // transporter.sendMail(mailOptions, function(error, body): any {
+        //     if(error){
+        //         return error
+        //     }
+        //     return ({message: 'Email has be sent to you, kindly verify your email to complete registration', token:RegistrationToken })
+        // })
+
+        // 
+        const token: any = await emailVerification
+         return token
+    } catch (error) {
+        throw new Error(error.message);
+    }
+},
+
+
+
     /**
      * @param {IUsersModel} users
      * @returns {Promise < IUsersModel >}
      * @memberof UsersService
      */
     async insert(body: IUsersModel): Promise<IUsersModel> {
+        const {email} = body
         try {
             const validate: Joi.ValidationResult<IUsersModel> = UsersValidation.createUsers(body);
 
@@ -107,6 +177,11 @@ const UsersService: IUsersService = {
                 throw new Error(validate.error.message);
             }
 
+            const isEmailTaken: any = await UsersModel.isEmailTaken(email);
+            if (isEmailTaken){
+                throw new Error("Account with Email exist. Login or use a diffrent Email")
+            }  
+            
             const users: IUsersModel = await UsersModel.create(body);
 
             return users;

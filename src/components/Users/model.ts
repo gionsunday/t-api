@@ -1,5 +1,5 @@
 import * as connections from '@/config/connection/connection';
-import { Document, Schema } from 'mongoose';
+import { Document, Model, Schema } from 'mongoose';
 import { NextFunction } from 'express';
 import * as bcrypt from "bcrypt"
 //import { any } from '@hapi/joi';
@@ -47,6 +47,10 @@ export interface IUsersModel extends Document {
     wallet: Wallet,
 }
 
+export interface IUsersModelStatic extends Model<IUsersModel> {
+    isEmailTaken(email: String, excludeUserId?: String): Promise<boolean>;
+
+}
 
 
 /**
@@ -111,19 +115,9 @@ UsersSchema.statics.isEmailTaken = async function (email, excludeUserId) {
     return !!user;
   };
 
-/**
- * Check if password matches the user's password
- * @param {string} password
- * @returns {Promise<boolean>}
- */
-    UsersSchema.methods.isPasswordMatch = async function (password) {
-    const user: any = this;
-    return await bcrypt.compare(password, user.password);
-  };
 
 
 
 
-
-export default connections.db.model<IUsersModel>('UsersModel', UsersSchema);
+export default connections.db.model<IUsersModel, IUsersModelStatic>('UsersModel', UsersSchema);
 

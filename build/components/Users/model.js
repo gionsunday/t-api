@@ -71,16 +71,5 @@ UsersSchema.statics.isEmailTaken = function (email, excludeUserId) {
         return !!user;
     });
 };
-/**
- * Check if password matches the user's password
- * @param {string} password
- * @returns {Promise<boolean>}
- */
-UsersSchema.methods.isPasswordMatch = function (password) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const user = this;
-        return yield bcrypt.compare(password, user.password);
-    });
-};
 exports.default = connections.db.model('UsersModel', UsersSchema);
 //# sourceMappingURL=model.js.map

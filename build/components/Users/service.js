@@ -13,6 +13,8 @@ const model_1 = require("./model");
 const validation_1 = require("./validation");
 const mongoose_1 = require("mongoose");
 const SearchHelper_1 = require("@/utils/SearchHelper");
+const jwt = require("jsonwebtoken");
+const nodemailer = require("nodemailer");
 /**
  * @export
  * @implements {IUsersModelService}
@@ -107,16 +109,79 @@ const UsersService = {
         });
     },
     /**
+         * @param {IUsersModel} users
+         * @returns {Promise < IUsersModel >}
+         * @memberof UsersService
+         */
+    emailVerification(body) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { email } = body;
+            try {
+                const validate = validation_1.default.createUsers(body);
+                if (validate.error) {
+                    throw new Error(validate.error.message);
+                }
+                const RegistrationToken = yield jwt.sign(body, process.env.SECRET, { expiresIn: "5min" });
+                if (!RegistrationToken) {
+                    throw new Error("Registration Failed. Please Try Again");
+                }
+                var transporter = nodemailer.createTransport({
+                    service: 'gmail',
+                    auth: {
+                        user: process.env.MAILER_AUTH_EMAIL,
+                        pass: process.env.MAILER_AUTH_PASS
+                    }
+                });
+                const mailOptions = {
+                    from: process.env.MAILER_AUTH_EMAIL,
+                    to: email,
+                    subject: ' Email Verification Code',
+                    html: `
+            <body style="background-color:white; padding:5px; height:100%; width:100%>
+            <div style="text-align:left; min-height:100vh; padding:20px">
+         
+         
+             <h4>Email Verification Code</>
+             <h2>Your account is almost ready</h2>
+            <p>Kindly verify your email to complete your account registration</p> <br/>
+      
+              <a href="https://8484-gionsunday-tapi-mcxlppcckcf.ws-eu106.gitpod.io/userverification/token" st >Verify</a>
+            <p>If this is not your doing,  you can safely ignore this message. Someone might have typed your email address by mistaken <br/> Thanks.</p>
+            </div>
+            </body>
+            
+
+            `
+                };
+                transporter.sendMail(mailOptions, function (error, body) {
+                    if (error) {
+                        return error;
+                    }
+                    return ({ message: 'Email has be sent to you, kindly verify your email to complete registration', token: RegistrationToken });
+                });
+                return RegistrationToken;
+            }
+            catch (error) {
+                throw new Error(error.message);
+            }
+        });
+    },
+    /**
      * @param {IUsersModel} users
      * @returns {Promise < IUsersModel >}
      * @memberof UsersService
      */
     insert(body) {
         return __awaiter(this, void 0, void 0, function* () {
+            const { email } = body;
             try {
                 const validate = validation_1.default.createUsers(body);
                 if (validate.error) {
                     throw new Error(validate.error.message);
+                }
+                const isEmailTaken = yield model_1.default.isEmailTaken(email);
+                if (isEmailTaken) {
+                    throw new Error("Account with Email exist. Login or use a diffrent Email");
                 }
                 const users = yield model_1.default.create(body);
                 return users;
