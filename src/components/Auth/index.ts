@@ -14,6 +14,8 @@ import config from '@/config/env/index';
  * @param {Response} res
  * @param {NextFunction} next
  * @returns {Promise < void >}
+ * @if the params is not available,
+   set the params to void. other wise return promise
  */
 export async function login(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
